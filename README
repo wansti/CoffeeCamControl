@@ -1,0 +1,49 @@
+CoffeeCamControl
+================
+
+This is a small server/client application written in Java. Its purpose is to
+allow viewers to write text messages onto a running VLC webcam stream via VLC's
+marquee function.
+
+The server connects to the VLC remote control interface on localhost, port 6321,
+and accepts multiple incoming client connections on port 1236. The client
+application can then be used for limited, user-friendly control over VLC, such as
+sending messages and taking snapshots.
+
+DISCLAIMER:
+The initial version of this software has essentially been whipped up in a lunch
+break or two and just cleaned up for release a little. It is probably buggy and
+exploitable and should only be used in a safe environment.
+
+To use, start VLC on the server machine with the following parameters (edit as needed):
+vlc -I rc --rc-host 127.0.0.1:6321 --sub-filter=marq <stream_source> <etc>
+After that, simply start the CoffeeCamServer on the same machine.
+Before building the client, don't forget to set the server IP in the config file.
+
+The server implements the CoffeeCam Control Protocol described below.
+
+
+CCCP - CoffeeCam Control Protocol - Revision 1
+
+Handshake
+	Upon connection, the server sends the challenge "Coffee?".
+	This has to be responded with our trademark one-eyed CoffeeCam smiley "o-)"
+	to establish a connection.
+
+Commands
+	COMMAND				SERVER RESPONSE		DESCRIPTION
+	/ccsay <message>	[CCOK] or error		Prints <message> onto the stream
+	/ccaud				<message>			Returns the number of connections
+	/ccget				[CCRET] <message>	Retrieves the last message
+	/ccsnap				<none>				Sends "snapshot" command to VLC
+	/ccdisconnect		<none>				Closes the connection
+
+
+License:
+This software is licensed under the GNU General Public License (GPL), v3 or higher.
+
+Credits:
+Written by Wansti.
+The server part is inspired by the following Online Tutorial by Dr. Herong Yang:
+http://www.herongyang.com/JDK/Socket-ReverseEchoServer-Multi-Connection-Socket-Server.html
+(And yes, I mean "inspired by", not "copied from" :-))
